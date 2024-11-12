@@ -10,3 +10,29 @@ if (mail($to, $subject, $message, $headers)) {
     echo "Failed to send email.";
 }
 ?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Email Test</title>
+</head>
+<body>
+    <h1>Send Test Email</h1>
+    <form method="POST">
+        <label for="email">Recipient Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br><br>
+        
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required>
+        <br><br>
+        
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" required></textarea>
+        <br><br>
+        
+        <button type="submit">Send Email</button>
+    </form>
+</body>
+</html>
