@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $manager = $result->fetch_assoc();
         $_SESSION['manager'] = $manager['emp_no'];
         $_SESSION['role'] = $manager['role']; // Set manager's role (e.g., admin or manager)
-        header("Location: dashboard.php");
+        header("Location: verify.php");
         exit;
     } else {
         $error = "Invalid login credentials.";
@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Manager Login</h1>
