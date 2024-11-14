@@ -47,6 +47,7 @@ $departments = $conn->query("SELECT * FROM departments");
 <html lang="en">
 <head>
     <title>Change Department</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Change Department</h1>
