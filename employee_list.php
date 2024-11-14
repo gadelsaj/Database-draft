@@ -44,7 +44,7 @@ $titles = $conn->query("SELECT DISTINCT title FROM titles");
        <!-- Navbar -->
  <nav>
     <ul>
-        <li><a href="employee_list.php">List Employees</a></li>
+        <li><a href="dashboard.php">Dashboard</a></li>
     </ul>
     <h1>Employee Dashboard</h1>
     <form method="POST" action="bulk_actions.php">
