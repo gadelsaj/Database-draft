@@ -46,6 +46,7 @@ $emp_no = $_GET['emp_no'];
 <html lang="en">
 <head>
     <title>Update Salary</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Update Salary</h1>
