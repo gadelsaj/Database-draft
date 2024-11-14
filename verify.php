@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result->num_rows > 0) {
         $_SESSION['verified'] = true;
-        header("Location: login.php");
+        header("Location: dashboard.php");
         exit;
     } else {
         $error = "Invalid email or phone number.";
@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Verify Employee</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Verify Employee</h1>
