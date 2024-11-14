@@ -16,6 +16,7 @@ if (mail($to, $subject, $message, $headers)) {
 <html lang="en">
 <head>
     <title>Email Test</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Send Test Email</h1>
