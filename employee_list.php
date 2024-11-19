@@ -46,7 +46,7 @@ $titles = $conn->query("SELECT DISTINCT title FROM titles");
     <ul>
         <li><a href="dashboard.php">Dashboard</a></li>
     </ul>
-    <h1>Employee Dashboard</h1>
+    <h1>Employee List</h1>
     <form method="POST" action="bulk_actions.php">
         <table border="1">
             <tr>
@@ -67,16 +67,20 @@ $titles = $conn->query("SELECT DISTINCT title FROM titles");
                 <td><?php echo htmlspecialchars($row['title']); ?></td>
                 <td><?php echo htmlspecialchars($row['salary']); ?></td>
                 <td>
-                    <a href="update_department.php?emp_no=<?php echo $row['emp_no']; ?>">Change Department</a> |
-                    <a href="update_title.php?emp_no=<?php echo $row['emp_no']; ?>">Change Title</a> |
-                    <a href="update_salary.php?emp_no=<?php echo $row['emp_no']; ?>">Update Salary</a>
+                    <button href="update_department.php?emp_no=<?php echo $row['emp_no']; ?>">Change Department</button> |
+                    <button href="update_title.php?emp_no=<?php echo $row['emp_no']; ?>">Change Title</button> |
+                    <button href="update_salary.php?emp_no=<?php echo $row['emp_no']; ?>">Update Salary</button>
                     <?php if ($role === 'admin') { ?>
-                    | <a href="fire_employee.php?emp_no=<?php echo $row['emp_no']; ?>">Fire</a>
+                    | <button href="fire_employee.php?emp_no=<?php echo $row['emp_no']; ?>">Fire</button>
                     <?php } ?>
+                    
+                    
                 </td>
             </tr>
+            
             <?php } ?>
         </table>
+        
         <br>
         <h3>Bulk Actions</h3>
         <label for="new_department">New Department:</label>
@@ -98,21 +102,101 @@ $titles = $conn->query("SELECT DISTINCT title FROM titles");
     </form>
     
     <h2>Reporting</h2>
-    <h3>Department Distribution</h3>
-    <ul>
-        <?php while ($row = $dept_dist->fetch_assoc()) { ?>
-            <li><?php echo htmlspecialchars($row['dept_name']) . ": " . htmlspecialchars($row['count']); ?></li>
-        <?php } ?>
-    </ul>
 
-    <h3>Title Distribution</h3>
-    <ul>
-        <?php while ($row = $title_dist->fetch_assoc()) { ?>
-            <li><?php echo htmlspecialchars($row['title']) . ": " . htmlspecialchars($row['count']); ?></li>
-        <?php } ?>
-    </ul>
+<div class="reporting-container">
+    <div class="table-container">
+        <h3>Department Distribution</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Department Name</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = $dept_dist->fetch_assoc()) { ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['dept_name']); ?></td>
+                        <td><?php echo htmlspecialchars($row['count']); ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
 
-    <h3><a href="export_data.php">Export Data</a></h3>
-    <h3><a href="add_review.php">Add Performance Review</a></h3>
+    <div class="table-container">
+        <h3>Title Distribution</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = $title_dist->fetch_assoc()) { ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['title']); ?></td>
+                        <td><?php echo htmlspecialchars($row['count']); ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    
+    .reporting-container {
+        display: flex;
+        justify-content: space-between; /* Adjusts space between tables */
+        gap: 20px; /* Space between the tables */
+    }
+    .table-container {
+        width: 48%; /* Controls width of each table */
+    }
+    table {
+        width: 100%; /* Ensures the tables use full width of their container */
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    /* Specific styles for buttons inside the table */
+table button {
+    background-color: #3e3e3e; /* Dark, muted gray button for sophistication */
+    color: white;
+    border: 2px solid #4a4a4a; /* Matching the color of the links for cohesion */
+    padding: 6px 12px; /* Smaller padding */
+    font-size: 0.9em; /* Smaller font size to fit within the table */
+    cursor: pointer;
+    text-transform: uppercase; /* Adds formality */
+    letter-spacing: 1px;
+    transition: background-color 0.3s, border-color 0.3s ease;
+    margin: 3px; /* Adjusted margin for spacing between buttons */
+}
+
+table button:hover {
+    background-color: #c5a300; /* Hover effect with goldish yellow */
+    border-color: #c5a300; /* Border matches the hover color */
+}
+
+table button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Soft shadow for focus effect */
+}
+
+</style>
+
+
+
+    <h3><button onclick="window.location.href='export_data.php'">Export Data</button></h3>
+<h3><button onclick="window.location.href='add_review.php'">Add Performance Review</button></h3>
+
+
 </body>
 </html>
