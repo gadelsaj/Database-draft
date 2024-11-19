@@ -48,6 +48,7 @@ $titles = $conn->query("SELECT DISTINCT title FROM titles");
         <li><a href="logout.php">Logout</a></li>
     </ul>
     <h1>Employee List</h1>
+    <button onclick="window.location.href='add_employee.php'">Add Employee</button>
     <form method="POST" action="bulk_actions.php">
         <table border="1">
             <tr>
@@ -71,11 +72,13 @@ $titles = $conn->query("SELECT DISTINCT title FROM titles");
                     <a href="update_department.php?emp_no=<?php echo $row['emp_no']; ?>">Change Department</a> |
                     <a href="update_title.php?emp_no=<?php echo $row['emp_no']; ?>">Change Title</a> |
                     <a href="update_salary.php?emp_no=<?php echo $row['emp_no']; ?>">Update Salary</a>
-                    <?php if ($role === 'admin') { ?>
-                    | <a href="fire_employee.php?emp_no=<?php echo $row['emp_no']; ?>">Fire</a>
-                    <?php } ?>
+                       <!-- Fire as a link -->
+                       <a href="fire_employee.php?emp_no=<?php echo htmlspecialchars($row['emp_no']); ?>"
+                               onclick="return confirm('Are you sure you want to fire this employee?');">
+                                Fire
+                            </a>
                     
-                    
+                     
                 </td>
             </tr>
             
