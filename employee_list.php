@@ -45,6 +45,7 @@ $titles = $conn->query("SELECT DISTINCT title FROM titles");
  <nav>
     <ul>
         <li><a href="dashboard.php">Dashboard</a></li>
+        <li><a href="logout.php">Logout</a></li>
     </ul>
     <h1>Employee List</h1>
     <form method="POST" action="bulk_actions.php">
@@ -67,11 +68,11 @@ $titles = $conn->query("SELECT DISTINCT title FROM titles");
                 <td><?php echo htmlspecialchars($row['title']); ?></td>
                 <td><?php echo htmlspecialchars($row['salary']); ?></td>
                 <td>
-                    <button href="update_department.php?emp_no=<?php echo $row['emp_no']; ?>">Change Department</button> |
-                    <button href="update_title.php?emp_no=<?php echo $row['emp_no']; ?>">Change Title</button> |
-                    <button href="update_salary.php?emp_no=<?php echo $row['emp_no']; ?>">Update Salary</button>
+                    <a href="update_department.php?emp_no=<?php echo $row['emp_no']; ?>">Change Department</a> |
+                    <a href="update_title.php?emp_no=<?php echo $row['emp_no']; ?>">Change Title</a> |
+                    <a href="update_salary.php?emp_no=<?php echo $row['emp_no']; ?>">Update Salary</a>
                     <?php if ($role === 'admin') { ?>
-                    | <button href="fire_employee.php?emp_no=<?php echo $row['emp_no']; ?>">Fire</button>
+                    | <a href="fire_employee.php?emp_no=<?php echo $row['emp_no']; ?>">Fire</a>
                     <?php } ?>
                     
                     
