@@ -2,11 +2,10 @@
 // Start the session to retrieve the logged-in employee's ID (if needed)
 session_start();
 
-// Database connection
 $servername = "localhost";
-$username = "root";
-$password = "Y00ngi103476134340";
-$dbname = "emp_project"; // Replace with your database name
+$username = "root"; // Replace with your MySQL username
+$password = "njtransit"; // Replace with your MySQL password if set
+$dbname = "emp_project"; // The database name
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 

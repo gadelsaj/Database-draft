@@ -9,12 +9,14 @@ if (!isset($_SESSION['manager'])) {
 
 $role = $_SESSION['role']; // Use for RBAC
 
-$sql = "SELECT e.emp_no, e.first_name, e.last_name, d.dept_name, t.title, s.salary
+$sql = "SELECT e.emp_no, e.first_name, e.last_name, d.dept_name, MAX(t.title) AS title, MAX(s.salary) AS salary
         FROM employees e
         LEFT JOIN titles t ON e.emp_no = t.emp_no
-        LEFT JOIN salaries s ON e.emp_no = s.emp_no
         LEFT JOIN departments d ON t.dept_no = d.dept_no
-        WHERE t.to_date = '9999-01-01'";
+        LEFT JOIN salaries s ON e.emp_no = s.emp_no
+        WHERE t.to_date = '9999-01-01' AND s.to_date = '9999-01-01'
+        GROUP BY e.emp_no, e.first_name, e.last_name, d.dept_name";
+
 
 $result = $conn->query($sql);
 
@@ -72,11 +74,14 @@ $titles = $conn->query("SELECT DISTINCT title FROM titles");
                     <a href="update_department.php?emp_no=<?php echo $row['emp_no']; ?>">Change Department</a> |
                     <a href="update_title.php?emp_no=<?php echo $row['emp_no']; ?>">Change Title</a> |
                     <a href="update_salary.php?emp_no=<?php echo $row['emp_no']; ?>">Update Salary</a>
-                       <!-- Fire as a link -->
-                       <a href="fire_employee.php?emp_no=<?php echo htmlspecialchars($row['emp_no']); ?>"
-                               onclick="return confirm('Are you sure you want to fire this employee?');">
-                                Fire
-                            </a>
+                    <a href="fire_employee.php?emp_no=<?php echo urlencode($row['emp_no']); ?>">Fire</a>
+
+</form>
+
+
+</form>
+
+
                     
                      
                 </td>

@@ -36,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="text" name="username" id="username" required>
         <br>
         <button type="submit">Login</button>
+        <!-- New Employee Login Button -->
+        <button type="button" onclick="window.location.href='employee_login.php'">Employee Login</button>
     </form>
     <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
 </body>
