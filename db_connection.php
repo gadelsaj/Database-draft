@@ -3,7 +3,7 @@
 
 $servername = "localhost";
 $username = "root"; // Replace with your MySQL username
-$password = "njtransit"; // Replace with your MySQL password if set
+$password = ""; // Replace with your MySQL password if set
 $dbname = "emp_project"; // The database name
 
 // Create connection

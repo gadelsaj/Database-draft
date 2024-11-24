@@ -7,6 +7,7 @@ if (!isset($_SESSION['manager'])) {
     exit;
 }
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $emp_no = $_POST['emp_no'];
     $new_dept_no = $_POST['new_department'];
@@ -30,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $employee_email = $conn->query("SELECT email FROM employees WHERE emp_no=$emp_no")->fetch_assoc()['email'];
         $subject = "Department Update Notification";
         $message = "Your department has been updated to department ID: $new_dept_no.";
-        mail($employee_email, $subject, $message);
+        //mail($employee_email, $subject, $message);
 
         echo "Department updated successfully! <a href='dashboard.php'>Go back to Dashboard</a>";
     } else {
@@ -47,6 +48,7 @@ $departments = $conn->query("SELECT * FROM departments");
 <html lang="en">
 <head>
     <title>Change Department</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Change Department</h1>

@@ -1,112 +1,129 @@
 <?php
+// Start the session to retrieve the logged-in employee's ID (if needed)
 session_start();
-include 'db_connection.php';
 
-if (!isset($_SESSION['manager'])) {
-    header("Location: login.php");
-    exit;
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "emp_project"; // Replace with your database name
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-$role = $_SESSION['role']; // Use for RBAC
+// Initialize the employee data variable
+$employee = null;
 
-$sql = "SELECT e.emp_no, e.first_name, e.last_name, d.dept_name, t.title, s.salary
-        FROM employees e
-        LEFT JOIN titles t ON e.emp_no = t.emp_no
-        LEFT JOIN salaries s ON e.emp_no = s.emp_no
-        LEFT JOIN departments d ON t.dept_no = d.dept_no
-        WHERE t.to_date = '9999-01-01'";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Ensure the user has entered a valid employee ID
+    $employee_id = isset($_POST['emp_no']) ? $_POST['emp_no'] : null;
+    
+    if ($employee_id) {
+        // SQL query to fetch employee details by employee number
+        $sql = "SELECT e.emp_no, e.first_name, e.last_name, d.dept_name, t.title, s.salary
+                FROM employees e
+                LEFT JOIN titles t ON e.emp_no = t.emp_no
+                LEFT JOIN salaries s ON e.emp_no = s.emp_no
+                LEFT JOIN departments d ON t.dept_no = d.dept_no
+                WHERE e.emp_no = ? AND t.to_date = '9999-01-01'"; // Current title
 
-$result = $conn->query($sql);
+        // Prepare and bind the SQL query
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $employee_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-// Fetch department-wise and title-wise distributions for reporting
-$dept_dist = $conn->query("SELECT d.dept_name, COUNT(*) AS count 
-                           FROM employees e 
-                           LEFT JOIN titles t ON e.emp_no = t.emp_no 
-                           LEFT JOIN departments d ON t.dept_no = d.dept_no 
-                           GROUP BY d.dept_name");
+        // Check if the employee exists in the database
+        if ($result->num_rows > 0) {
+            $employee = $result->fetch_assoc();
+        } else {
+            $error_message = "No employee found with the ID number: $employee_id";
+        }
+    } else {
+        $error_message = "Please enter a valid Employee ID.";
+    }
+}
 
-$title_dist = $conn->query("SELECT t.title, COUNT(*) AS count 
-                            FROM titles t 
-                            GROUP BY t.title");
-
-// Fetch departments and titles for bulk actions
-$departments = $conn->query("SELECT * FROM departments");
-$titles = $conn->query("SELECT DISTINCT title FROM titles");
+// Close the connection
+$conn->close();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Employee Dashboard</h1>
-    <form method="POST" action="bulk_actions.php">
-        <table border="1">
+
+    <!-- Navbar -->
+    <nav>
+        <ul>
+            <li><a href="employee_list.php">List Employees</a></li>
+            <li><a href="project_details.php?project_id=2">Project Details</a></li>
+            <li><a href="logout.php">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Banner -->
+    <header>
+        <h1>Employee Dashboard</h1>
+    </header>
+
+    <!-- Form to input Employee ID -->
+    <section class="search-employee">
+        <h2>Search Employee by ID</h2>
+        <form method="POST">
+            <label for="emp_no">Employee ID:</label>
+            <input type="text" name="emp_no" id="emp_no" required>
+            <button type="submit">Search</button>
+        </form>
+        <?php
+        if (isset($error_message)) {
+            echo "<p style='color:red;'>$error_message</p>";
+        }
+        ?>
+    </section>
+
+    <!-- Employee Information -->
+    <section class="employee-info">
+        <?php if ($employee): ?>
+        <h2>Employee Information</h2>
+        <table>
             <tr>
-                <th>Select</th>
-                <th>Employee No</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Title</th>
-                <th>Salary</th>
-                <th>Actions</th>
+                <td>Employee Number:</td>
+                <td><?php echo htmlspecialchars($employee['emp_no']); ?></td>
             </tr>
-            <?php while ($row = $result->fetch_assoc()) { ?>
             <tr>
-                <td><input type="checkbox" name="selected_employees[]" value="<?php echo $row['emp_no']; ?>"></td>
-                <td><?php echo htmlspecialchars($row['emp_no']); ?></td>
-                <td><?php echo htmlspecialchars($row['first_name'] . " " . $row['last_name']); ?></td>
-                <td><?php echo htmlspecialchars($row['dept_name']); ?></td>
-                <td><?php echo htmlspecialchars($row['title']); ?></td>
-                <td><?php echo htmlspecialchars($row['salary']); ?></td>
-                <td>
-                    <a href="update_department.php?emp_no=<?php echo $row['emp_no']; ?>">Change Department</a> |
-                    <a href="update_title.php?emp_no=<?php echo $row['emp_no']; ?>">Change Title</a> |
-                    <a href="update_salary.php?emp_no=<?php echo $row['emp_no']; ?>">Update Salary</a>
-                    <?php if ($role === 'admin') { ?>
-                    | <a href="fire_employee.php?emp_no=<?php echo $row['emp_no']; ?>">Fire</a>
-                    <?php } ?>
-                </td>
+                <td>First Name:</td>
+                <td><?php echo htmlspecialchars($employee['first_name']); ?></td>
             </tr>
-            <?php } ?>
+            <tr>
+                <td>Last Name:</td>
+                <td><?php echo htmlspecialchars($employee['last_name']); ?></td>
+            </tr>
+            <tr>
+                <td>Department:</td>
+                <td><?php echo htmlspecialchars($employee['dept_name']); ?></td>
+            </tr>
+            <tr>
+                <td>Title:</td>
+                <td><?php echo htmlspecialchars($employee['title']); ?></td>
+            </tr>
+            <tr>
+                <td>Salary:</td>
+                <td><?php echo '$' . number_format($employee['salary'], 2); ?></td>
+            </tr>
         </table>
-        <br>
-        <h3>Bulk Actions</h3>
-        <label for="new_department">New Department:</label>
-        <select name="new_department" id="new_department">
-            <?php while ($dept = $departments->fetch_assoc()) { ?>
-                <option value="<?php echo $dept['dept_no']; ?>"><?php echo htmlspecialchars($dept['dept_name']); ?></option>
-            <?php } ?>
-        </select>
-        <br>
-        <label for="new_title">New Title:</label>
-        <select name="new_title" id="new_title">
-            <?php while ($title = $titles->fetch_assoc()) { ?>
-                <option value="<?php echo htmlspecialchars($title['title']); ?>"><?php echo htmlspecialchars($title['title']); ?></option>
-            <?php } ?>
-        </select>
-        <br>
-        <button type="submit" name="action" value="bulk_update_department">Bulk Update Department</button>
-        <button type="submit" name="action" value="bulk_update_title">Bulk Update Title</button>
-    </form>
-    
-    <h2>Reporting</h2>
-    <h3>Department Distribution</h3>
-    <ul>
-        <?php while ($row = $dept_dist->fetch_assoc()) { ?>
-            <li><?php echo htmlspecialchars($row['dept_name']) . ": " . htmlspecialchars($row['count']); ?></li>
-        <?php } ?>
-    </ul>
+        <?php else: ?>
+        <p>No employee data available. Please try searching for a valid employee ID.</p>
+        <?php endif; ?>
+    </section>
 
-    <h3>Title Distribution</h3>
-    <ul>
-        <?php while ($row = $title_dist->fetch_assoc()) { ?>
-            <li><?php echo htmlspecialchars($row['title']) . ": " . htmlspecialchars($row['count']); ?></li>
-        <?php } ?>
-    </ul>
-
-    <h3><a href="export_data.php">Export Data</a></h3>
-    <h3><a href="add_review.php">Add Performance Review</a></h3>
 </body>
 </html>

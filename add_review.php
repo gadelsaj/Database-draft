@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['emp_no']) && isset($_
 <html>
 <head>
     <title>Add Performance Review</title>
+    <link rel="stylesheet" href="styles.css"> 
 </head>
 <body>
     <h1>Add Performance Review</h1>
@@ -44,3 +45,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['emp_no']) && isset($_
     </form>
 </body>
 </html>
+

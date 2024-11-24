@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $employee_email = $conn->query("SELECT email FROM employees WHERE emp_no=$emp_no")->fetch_assoc()['email'];
         $subject = "Salary Update Notification";
         $message = "Your salary has been updated to: $new_salary.";
-        mail($employee_email, $subject, $message);
+       // mail($employee_email, $subject, $message);
 
         echo "Salary updated successfully! <a href='dashboard.php'>Go back to Dashboard</a>";
     } else {
@@ -46,6 +46,7 @@ $emp_no = $_GET['emp_no'];
 <html lang="en">
 <head>
     <title>Update Salary</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Update Salary</h1>

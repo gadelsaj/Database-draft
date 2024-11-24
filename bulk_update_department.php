@@ -33,6 +33,7 @@ $employees = $conn->query("SELECT emp_no, first_name, last_name FROM employees")
 <html>
 <head>
     <title>Bulk Update Department</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Bulk Update Department</h1>
